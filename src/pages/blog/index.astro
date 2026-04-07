@@ -1,0 +1,27 @@
+---
+import TwoColumnLayout from '../../layouts/TwoColumnLayout.astro';
+import { getCollection } from 'astro:content';
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
+import PostList from '../../components/post/PostList.astro';
+
+const posts = (await getCollection('blog')).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+---
+
+<TwoColumnLayout title="Blog Archive">
+	<!-- Breadcrumbs -->
+	<Breadcrumb className="mb-6">
+		<BreadcrumbList className="text-xs font-black uppercase text-muted-foreground/60 tracking-tight">
+			<BreadcrumbItem>
+				<BreadcrumbLink href="/" className="hover:text-primary transition-colors">Home</BreadcrumbLink>
+			</BreadcrumbItem>
+			<BreadcrumbSeparator className="opacity-30" />
+			<BreadcrumbItem>
+				<BreadcrumbPage className="text-foreground/40">Archive</BreadcrumbPage>
+			</BreadcrumbItem>
+		</BreadcrumbList>
+	</Breadcrumb>
+
+	<PostList posts={posts} />
+</TwoColumnLayout>

@@ -1,0 +1,52 @@
+---
+import { getCollection } from 'astro:content';
+import TwoColumnLayout from '../../layouts/TwoColumnLayout.astro';
+import PostList from '../../components/post/PostList.astro';
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
+
+export async function getStaticPaths() {
+	const posts = await getCollection('blog');
+	const uniqueCategories = [...new Set(posts.map((post) => post.data.categories).flat())];
+
+	return uniqueCategories.map((category) => {
+		const categoryPosts = posts.filter((post) => post.data.categories.includes(category))
+			.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+		return {
+			params: { category },
+			props: { posts: categoryPosts },
+		};
+	});
+}
+
+const { category } = Astro.params;
+const { posts } = Astro.props;
+---
+
+<TwoColumnLayout title={`Category: ${category}`}>
+	<!-- Breadcrumbs -->
+	<Breadcrumb className="mb-6">
+		<BreadcrumbList className="text-xs font-black uppercase text-muted-foreground/60 tracking-tight">
+			<BreadcrumbItem>
+				<BreadcrumbLink href="/" className="hover:text-primary transition-colors">Home</BreadcrumbLink>
+			</BreadcrumbItem>
+			<BreadcrumbSeparator className="opacity-30" />
+			<BreadcrumbItem>
+				<BreadcrumbLink href="/category" className="hover:text-primary transition-colors">Categories</BreadcrumbLink>
+			</BreadcrumbItem>
+			<BreadcrumbSeparator className="opacity-30" />
+			<BreadcrumbItem>
+				<BreadcrumbPage className="text-foreground/40">{category}</BreadcrumbPage>
+			</BreadcrumbItem>
+		</BreadcrumbList>
+	</Breadcrumb>
+
+	<div class="mb-8">
+		<h1 class="text-3xl font-black tracking-tight text-foreground mb-2 flex items-center gap-3">
+			<span class="w-2 h-8 bg-primary rounded-full"></span>
+			{category}
+		</h1>
+		<p class="text-base text-muted-foreground font-medium">Browsing all posts in the <span class="text-primary font-bold">{category}</span> category.</p>
+	</div>
+
+	<PostList posts={posts} />
+</TwoColumnLayout>

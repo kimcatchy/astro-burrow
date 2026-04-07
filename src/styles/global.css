@@ -1,0 +1,117 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --radius-xl: 0.375rem;
+  --radius-lg: 0.375rem;
+  --radius-md: 0.375rem;
+  --radius-sm: 0.25rem;
+
+  /* Tailwind v4 Theme Variables */
+  --color-background: hsl(0 0% 8%);
+  --color-foreground: hsl(0 0% 95%);
+  
+  --color-card: hsl(0 0% 12%);
+  --color-card-foreground: hsl(0 0% 95%);
+  
+  --color-popover: hsl(0 0% 12%);
+  --color-popover-foreground: hsl(0 0% 95%);
+  
+  --color-primary: hsl(45 100% 50%);
+  --color-primary-foreground: hsl(0 0% 10%);
+  
+  --color-secondary: hsl(0 0% 20%);
+  --color-secondary-foreground: hsl(0 0% 95%);
+  
+  --color-muted: hsl(0 0% 20%);
+  --color-muted-foreground: hsl(0 0% 65%);
+  
+  --color-accent: hsl(45 100% 50%);
+  --color-accent-foreground: hsl(0 0% 10%);
+  
+  --color-destructive: hsl(0 84% 60%);
+  --color-destructive-foreground: hsl(0 0% 100%);
+  
+  --color-border: hsl(0 0% 20%);
+  --color-input: hsl(0 0% 20%);
+  --color-ring: hsl(45 100% 50%);
+
+  /* Sidebar variables */
+  --color-sidebar: hsl(0 0% 8%);
+  --color-sidebar-foreground: hsl(0 0% 95%);
+  --color-sidebar-primary: hsl(45 100% 50%);
+  --color-sidebar-primary-foreground: hsl(0 0% 10%);
+  --color-sidebar-accent: hsl(0 0% 12%);
+  --color-sidebar-accent-foreground: hsl(0 0% 95%);
+  --color-sidebar-border: hsl(0 0% 20%);
+  --color-sidebar-ring: hsl(45 100% 50%);
+
+  /* Koharu patterns */
+  --color-box-bg-shadow: rgba(0, 0, 0, 0.5);
+  --color-gradient-bg-start: hsl(0 0% 12%);
+  --color-gradient-bg-end: hsl(0 0% 8%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    scrollbar-gutter: stable;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: "Atkinson", sans-serif;
+  }
+}
+
+@layer components {
+  /* shadcn-like table styles for markdown */
+  .prose table {
+    @apply w-full border-collapse border border-border rounded-md overflow-hidden my-6;
+  }
+  .prose thead {
+    @apply bg-muted/50 border-b border-border;
+  }
+  .prose th {
+    @apply px-4 py-2 text-left text-xs font-black uppercase text-muted-foreground border-r border-border last:border-r-0;
+  }
+  .prose td {
+    @apply px-4 py-2 text-sm border-b border-border border-r border-border last:border-r-0;
+  }
+  .prose tr:last-child td {
+    @apply border-b-0;
+  }
+  .prose tr:hover td {
+    @apply bg-muted/20 transition-colors;
+  }
+}
+
+@utility shadow-box {
+  box-shadow: 0px 50px 50px -50px var(--color-box-bg-shadow);
+}
+
+@utility bg-gradient-start {
+  background: linear-gradient(180deg, var(--color-gradient-bg-start) 10%, var(--color-gradient-bg-end) 100%);
+}
+
+@layer utilities {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--color-primary), transparent 80%) transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 5px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: color-mix(in srgb, var(--color-primary), transparent 80%);
+    border-radius: 20px;
+    transition: background-color 0.2s;
+  }
+  .scrollbar-thin:hover::-webkit-scrollbar-thumb {
+    background-color: color-mix(in srgb, var(--color-primary), transparent 60%);
+  }
+}

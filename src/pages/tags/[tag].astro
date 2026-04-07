@@ -1,0 +1,52 @@
+---
+import { getCollection } from 'astro:content';
+import TwoColumnLayout from '../../layouts/TwoColumnLayout.astro';
+import PostList from '../../components/post/PostList.astro';
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
+
+export async function getStaticPaths() {
+	const allPosts = await getCollection('blog');
+	const uniqueTags = [...new Set(allPosts.map((post) => post.data.tags || []).flat())];
+
+	return uniqueTags.map((tag) => {
+		const filteredPosts = allPosts.filter((post) => post.data.tags?.includes(tag))
+			.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+		return {
+			params: { tag },
+			props: { posts: filteredPosts },
+		};
+	});
+}
+
+const { tag } = Astro.params;
+const { posts } = Astro.props;
+---
+
+<TwoColumnLayout title={`Tag: ${tag}`}>
+	<!-- Breadcrumbs -->
+	<Breadcrumb className="mb-6">
+		<BreadcrumbList className="text-xs font-black uppercase text-muted-foreground/60 tracking-tight">
+			<BreadcrumbItem>
+				<BreadcrumbLink href="/" className="hover:text-primary transition-colors">Home</BreadcrumbLink>
+			</BreadcrumbItem>
+			<BreadcrumbSeparator className="opacity-30" />
+			<BreadcrumbItem>
+				<BreadcrumbLink href="/tags" className="hover:text-primary transition-colors">Tags</BreadcrumbLink>
+			</BreadcrumbItem>
+			<BreadcrumbSeparator className="opacity-30" />
+			<BreadcrumbItem>
+				<BreadcrumbPage className="text-foreground/40">#{tag}</BreadcrumbPage>
+			</BreadcrumbItem>
+		</BreadcrumbList>
+	</Breadcrumb>
+
+	<div class="mb-8">
+		<h1 class="text-3xl font-black tracking-tight text-foreground mb-2 flex items-center gap-3">
+			<span class="w-8 h-8 flex items-center justify-center bg-primary/10 rounded-md text-primary text-xl">#</span>
+			{tag}
+		</h1>
+		<p class="text-base text-muted-foreground font-medium">Posts tagged with <span class="text-primary font-bold">#{tag}</span>.</p>
+	</div>
+
+	<PostList posts={posts} />
+</TwoColumnLayout>

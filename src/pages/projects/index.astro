@@ -1,0 +1,132 @@
+---
+import TwoColumnLayout from '../../layouts/TwoColumnLayout.astro';
+import { getCollection } from 'astro:content';
+import FormattedDate from '../../components/FormattedDate.astro';
+import { Image } from 'astro:assets';
+import { Separator } from "@/components/ui/separator";
+import PostList from '../../components/post/PostList.astro';
+
+import p1 from '../../assets/blog-placeholder-1.jpg';
+import p2 from '../../assets/blog-placeholder-2.jpg';
+import p3 from '../../assets/blog-placeholder-3.jpg';
+import p4 from '../../assets/blog-placeholder-4.jpg';
+
+const rawProjects = (await getCollection('project')).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+
+// Pinned projects vs Regular projects (Regular includes Pinned)
+const rawPinnedProjects = rawProjects.filter(p => p.data.pinned);
+const regularProjects = rawProjects;
+
+const images = import.meta.glob<{ default: ImageMetadata }>('/src/assets/**/*.{jpeg,jpg,png,gif,webp}');
+const placeholders = [p1, p2, p3, p4];
+
+const pinnedProjects = await Promise.all(rawPinnedProjects.map(async (project, index) => {
+	const bodyWithoutCode = (project.body || '').replace(/```[\s\S]*?```/g, '');
+	const match = bodyWithoutCode.match(/!\[.*?\]\((.*?)\)/);
+	let firstImage: any = null;
+
+	if (match) {
+		const rawPath = match[1];
+		if (rawPath.startsWith('http')) {
+			firstImage = rawPath;
+		} else {
+			const fileName = rawPath.split('/').pop();
+			const assetPath = `/src/assets/${fileName}`;
+			if (images[assetPath]) {
+				const module = await images[assetPath]();
+				firstImage = module.default;
+			}
+		}
+	}
+
+	return {
+		...project,
+		firstImage,
+		placeholder: placeholders[index % placeholders.length]
+	};
+}));
+---
+
+<TwoColumnLayout title="Projects">
+
+	<div class="space-y-10">
+		<!-- Pinned Projects Section -->
+		{pinnedProjects.length > 0 && (
+			<section class="space-y-6">
+				<div class="flex items-center gap-4 group">
+					<h2 class="text-xs font-black uppercase text-muted-foreground group-hover:text-primary transition-colors tracking-tight">Pinned Projects</h2>
+					<Separator className="flex-1 opacity-20" />
+				</div>
+
+				<div class="grid grid-cols-1 gap-6">
+					{pinnedProjects.map((project) => (
+						<article class="group relative flex flex-col md:flex-row gap-6 items-center rounded-md border border-border/60 bg-card p-4 md:p-5 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1 overflow-hidden bg-gradient-start">
+							<div class="w-full md:w-[40%] aspect-[16/10] overflow-hidden rounded-md border border-border shadow-inner relative">
+								{project.firstImage ? (
+									typeof project.firstImage === 'string' ? (
+										<img 
+											src={project.firstImage} 
+											alt={project.data.title}
+											class="object-cover w-full h-full transition-transform duration-700 group-hover:scale-105" 
+											loading="lazy"
+											decoding="async"
+										/>
+									) : (
+										<Image 
+											width={600} 
+											height={380} 
+											src={project.firstImage} 
+											alt={project.data.title}
+											class="object-cover w-full h-full transition-transform duration-700 group-hover:scale-105" 
+										/>
+									)
+								) : (
+									<Image 
+										width={600} 
+										height={380} 
+										src={project.placeholder} 
+										alt={project.data.title}
+										class="object-cover w-full h-full transition-transform duration-700 group-hover:scale-105" 
+									/>
+								)}
+								<div class="absolute inset-0 ring-1 ring-inset ring-white/10 rounded-md"></div>
+							</div>
+							<div class="flex-1 flex flex-col py-2 relative">
+								<div class="flex items-center gap-2 text-xs font-black text-primary uppercase mb-3">
+									<span class="w-4 h-[2px] bg-primary rounded-full"></span>
+									Pinned Project
+								</div>
+								<h3 class="text-2xl md:text-3xl font-black tracking-tight text-foreground mb-3 leading-tight group-hover:text-primary transition-colors">
+									<a href={`/projects/${project.id}/`} class="focus:outline-none">
+										{project.data.title}
+										<span class="absolute inset-0" aria-hidden="true"></span>
+									</a>
+								</h3>
+								<p class="text-muted-foreground/80 line-clamp-2 text-sm leading-relaxed mb-6 font-medium">
+									{project.data.description}
+								</p>
+								<div class="mt-auto flex items-center justify-between">
+									<span class="text-xs font-black text-muted-foreground/50 uppercase">
+										<FormattedDate date={project.data.pubDate} />
+									</span>
+								</div>
+							</div>
+						</article>
+					))}
+				</div>
+			</section>
+		)}
+
+		<!-- Regular Feed -->
+		<section class="space-y-6 pt-2">
+			<div class="flex items-center gap-4 group">
+				<h2 class="text-xs font-black uppercase text-muted-foreground group-hover:text-primary transition-colors tracking-tight">All Projects</h2>
+				<Separator className="flex-1 opacity-20" />
+			</div>
+
+			<PostList posts={regularProjects} />
+		</section>
+	</div>
+</TwoColumnLayout>
