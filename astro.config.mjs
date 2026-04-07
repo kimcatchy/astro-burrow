@@ -8,7 +8,8 @@ import tailwindcss from '@tailwindcss/vite';
 import react from '@astrojs/react';
 
 function remarkShiftHeadings() {
-  return (tree) => {
+  return (/** @type {import('mdast').Root} */ tree) => {
+    /** @param {any} node */
     function visit(node) {
       if (node.type === 'heading' && node.depth) {
         node.depth = Math.min(node.depth + 1, 6);
