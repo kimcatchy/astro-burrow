@@ -8,16 +8,16 @@ const blog = defineCollection({
 	// Type-check frontmatter using a schema
 	schema: ({ image }) =>
 		z.object({
+			id: z.number(),
 			title: z.string(),
 			description: z.string(),
 			// Notion: 'Created time' (pubDate) and 'Last edited time' (updatedDate)
 			pubDate: z.coerce.date(),
 			updatedDate: z.coerce.date().optional(),
 			heroImage: image().optional(),
-			categories: z.array(z.string()).default(['Uncategorized']),
+			category: z.string().default('Uncategorized'),
 			tags: z.array(z.string()).optional(),
 			pinned: z.boolean().default(false),
-			draft: z.boolean().default(false),
 		}),
 });
 
@@ -25,6 +25,7 @@ const project = defineCollection({
 	loader: glob({ base: './src/content/project', pattern: '**/*.{md,mdx}' }),
 	schema: ({ image }) =>
 		z.object({
+			id: z.number(),
 			title: z.string(),
 			description: z.string(),
 			pubDate: z.coerce.date(),
@@ -34,7 +35,6 @@ const project = defineCollection({
 			link: z.string().url().optional(),
 			repository: z.string().url().optional(),
 			pinned: z.boolean().default(false),
-			draft: z.boolean().default(false),
 		}),
 });
 

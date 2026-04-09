@@ -31,7 +31,7 @@ const recentPosts = posts
 
 const allTags = posts.flatMap(post => post.data.tags || []);
 const uniqueTags = [...new Set(allTags)].length;
-const allCategories = posts.flatMap(post => post.data.categories || ['Uncategorized']);
+const allCategories = posts.map(post => post.data.category || 'Uncategorized');
 const uniqueCategories = [...new Set(allCategories)].sort();
 ---
 

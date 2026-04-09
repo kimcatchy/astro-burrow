@@ -69,11 +69,11 @@ export function AppSidebar({
               <Zap size={12} className="text-primary" /> Navigation
             </h4>
             <div className="flex flex-col gap-1">
-              <a href="/" className="flex items-center gap-3 px-3 py-2 rounded-md text-xs font-black uppercase tracking-tight text-foreground/60 hover:text-primary hover:bg-primary/5 transition-all no-underline">
+              <a href={import.meta.env.BASE_URL} className="flex items-center gap-3 px-3 py-2 rounded-md text-xs font-black uppercase tracking-tight text-foreground/60 hover:text-primary hover:bg-primary/5 transition-all no-underline">
                 <Home size={14} className="shrink-0 opacity-70" /> Home
               </a>
               
-              <Accordion type="single" collapsible className="w-full border-none">
+              <Accordion className="w-full border-none">
                 <AccordionItem value="posts" className="border-none">
                   <AccordionTrigger className="flex items-center justify-between px-3 py-2 rounded-md text-xs font-black uppercase tracking-tight text-foreground/60 hover:text-primary hover:bg-primary/5 transition-all w-full text-left hover:no-underline group/trigger py-2 border-none">
                     <div className="flex items-center gap-3">
@@ -81,23 +81,23 @@ export function AppSidebar({
                     </div>
                   </AccordionTrigger>
                   <AccordionContent className="pb-1 pt-1 flex flex-col gap-1 pl-6 transition-all border-none">
-                    <a href="/blog" className="flex items-center gap-3 px-3 py-1.5 rounded-md text-xs font-black uppercase tracking-tight text-foreground/60 hover:text-primary hover:bg-primary/5 transition-all no-underline">
+                    <a href={`${import.meta.env.BASE_URL}blog`} className="flex items-center gap-3 px-3 py-1.5 rounded-md text-xs font-black uppercase tracking-tight text-foreground/60 hover:text-primary hover:bg-primary/5 transition-all no-underline">
                       <Book size={12} className="shrink-0 opacity-70" /> Archive
                     </a>
-                    <a href="/category" className="flex items-center gap-3 px-3 py-1.5 rounded-md text-xs font-black uppercase tracking-tight text-foreground/60 hover:text-primary hover:bg-primary/5 transition-all no-underline">
+                    <a href={`${import.meta.env.BASE_URL}category`} className="flex items-center gap-3 px-3 py-1.5 rounded-md text-xs font-black uppercase tracking-tight text-foreground/60 hover:text-primary hover:bg-primary/5 transition-all no-underline">
                       <Hash size={12} className="shrink-0 opacity-70" /> Categories
                     </a>
-                    <a href="/tags" className="flex items-center gap-3 px-3 py-1.5 rounded-md text-xs font-black uppercase tracking-tight text-foreground/60 hover:text-primary hover:bg-primary/5 transition-all no-underline">
+                    <a href={`${import.meta.env.BASE_URL}tags`} className="flex items-center gap-3 px-3 py-1.5 rounded-md text-xs font-black uppercase tracking-tight text-foreground/60 hover:text-primary hover:bg-primary/5 transition-all no-underline">
                       <Tag size={12} className="shrink-0 opacity-70" /> Tags
                     </a>
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
 
-              <a href="/projects" className="flex items-center gap-3 px-3 py-2 rounded-md text-xs font-black uppercase tracking-tight text-foreground/60 hover:text-primary hover:bg-primary/5 transition-all no-underline">
+              <a href={`${import.meta.env.BASE_URL}projects`} className="flex items-center gap-3 px-3 py-2 rounded-md text-xs font-black uppercase tracking-tight text-foreground/60 hover:text-primary hover:bg-primary/5 transition-all no-underline">
                 <FolderRoot size={14} className="shrink-0 opacity-70" /> Projects
               </a>
-              <a href="/about" className="flex items-center gap-3 px-3 py-2 rounded-md text-xs font-black uppercase tracking-tight text-foreground/60 hover:text-primary hover:bg-primary/5 transition-all no-underline">
+              <a href={`${import.meta.env.BASE_URL}about`} className="flex items-center gap-3 px-3 py-2 rounded-md text-xs font-black uppercase tracking-tight text-foreground/60 hover:text-primary hover:bg-primary/5 transition-all no-underline">
                 <User size={14} className="shrink-0 opacity-70" /> About
               </a>
             </div>
@@ -113,7 +113,7 @@ export function AppSidebar({
             </div>
             <div className="flex flex-col gap-2">
               {recentPosts.map((post) => (
-                <a key={post.id} href={`/blog/${post.id}/`} className="group/card block px-3 py-2.5 hover:bg-primary/5 rounded-md transition-all no-underline border-l-2 border-transparent hover:border-primary">
+                <a key={post.id} href={`${import.meta.env.BASE_URL}blog/${post.id}/`} className="group/card block px-3 py-2.5 hover:bg-primary/5 rounded-md transition-all no-underline border-l-2 border-transparent hover:border-primary">
                   <span className="text-xs font-black text-foreground group-hover/card:text-primary transition-colors line-clamp-2 leading-snug mb-1">
                     {post.title}
                   </span>

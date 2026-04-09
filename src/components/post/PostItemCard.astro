@@ -19,7 +19,7 @@ interface Props {
 const { post, index } = Astro.props;
 
 const isProject = post.collection === 'project';
-const postUrl = isProject ? `/projects/${post.id}/` : `/blog/${post.id}/`;
+const postUrl = isProject ? `${import.meta.env.BASE_URL}projects/${post.id}/` : `${import.meta.env.BASE_URL}blog/${post.id}/`;
 const itemTags = isProject ? post.data.techStack : post.data.tags;
 
 // Calculate reading time
@@ -29,7 +29,11 @@ const readState = readingTime(post.body || '');
 const images = import.meta.glob<{ default: ImageMetadata }>('/src/assets/**/*.{jpeg,jpg,png,gif,webp}');
 
 // Extract first image outside of code blocks
-const bodyWithoutCode = (post.body || '').replace(/```[\s\S]*?```/g, '');
+const bodyWithoutCode = (post.body || '')
+  .replace(/```[\s\S]*?```/g, '') // Fenced code blocks
+  .replace(/`[^`\n]+`/g, '')      // Inline code
+  .replace(/<(pre|code)[\s\S]*?<\/\1>/gi, ''); // HTML code tags
+
 const match = bodyWithoutCode.match(/!\[.*?\]\((.*?)\)/);
 let firstImage: any = null;
 
@@ -38,9 +42,15 @@ if (match) {
   if (rawPath.startsWith('http')) {
     firstImage = rawPath;
   } else {
-    // Resolve relative paths like ../../assets/ to /src/assets/
-    const fileName = rawPath.split('/').pop();
-    const assetPath = `/src/assets/${fileName}`;
+    // Resolve relative paths like ../../assets/notion/blog-61/img.jpg to /src/assets/notion/blog-61/img.jpg
+    let assetPath = rawPath;
+    if (rawPath.includes('../assets/')) {
+      assetPath = rawPath.replace(/^.*?\.\.\/assets\//, '/src/assets/');
+    } else {
+      const fileName = rawPath.split('/').pop();
+      assetPath = `/src/assets/${fileName}`;
+    }
+    
     if (images[assetPath]) {
       const module = await images[assetPath]();
       firstImage = module.default;
@@ -118,7 +128,7 @@ const placeholder = placeholders[index % placeholders.length];
     <div class="mt-auto relative z-30">
       <div class="flex items-center gap-2 flex-wrap">
         {itemTags?.slice(0, 3).map((tag: string) => (
-          <a href={`/tags/${tag}`} class="inline-block relative z-30">
+          <a href={`${import.meta.env.BASE_URL}tags/${tag}`} class="inline-block relative z-30">
             <Badge variant="outline" className="text-xs uppercase font-black px-2 py-0 hover:bg-primary hover:text-primary-foreground transition-colors border-border/50 rounded-md bg-secondary/50">
               {tag}
             </Badge>

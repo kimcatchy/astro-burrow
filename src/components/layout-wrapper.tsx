@@ -38,7 +38,9 @@ export function LayoutWrapper({
           <SidebarTrigger className="-ml-1 text-foreground" />
           <div className="flex items-center gap-2.5 ml-1">
             <div className="w-6 h-6 rounded-md overflow-hidden shrink-0">
-              <img src="/logo.png" alt="Logo" className="w-full h-full object-cover" />
+              <a href={import.meta.env.BASE_URL}>
+                <img src={`${import.meta.env.BASE_URL}logo.png`} alt="Logo" className="w-full h-full object-cover" />
+              </a>
             </div>
             <span className="font-black uppercase tracking-tight text-foreground text-sm">{title}</span>
           </div>

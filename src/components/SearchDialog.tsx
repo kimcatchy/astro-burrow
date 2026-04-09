@@ -82,7 +82,7 @@ export function SearchDialog() {
   React.useEffect(() => {
     if (open && data.length === 0 && !loading) {
       setLoading(true)
-      fetch("/api/search.json")
+      fetch(`${import.meta.env.BASE_URL}api/search.json`)
         .then((res) => res.json())
         .then((json) => {
           setData(json)

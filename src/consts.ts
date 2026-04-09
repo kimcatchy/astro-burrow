@@ -2,7 +2,7 @@
 // You can import this data from anywhere in your site by using the `import` keyword.
 
 export const SITE_TITLE = 'Burrow';
-export const SITE_DESCRIPTION = 'Theme by kimcatchy';
+export const SITE_DESCRIPTION = 'Astro Burrow Theme';
 export const SOCIAL_LINKS = {
     github: 'https://github.com/kimcatchy',
     gitlab: 'https://gitlab.com/kimcatchy',

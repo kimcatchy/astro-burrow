@@ -17,7 +17,7 @@ type Props = CollectionEntry<'blog'>['data'] & {
 	headings?: Heading[];
 };
 
-const { title, description, pubDate, updatedDate, categories, tags, heroImage, headings = [] } = Astro.props;
+const { title, description, pubDate, updatedDate, category, tags, heroImage, headings = [] } = Astro.props;
 
 // Ensure Footnotes appears in TOC if footnotes exist in the content
 // Standard Remark-footnotes uses 'footnote-label' or 'footnotes'
@@ -107,13 +107,13 @@ if (!hasFootnotesInHeadings) {
 	<Breadcrumb className="mb-6">
 		<BreadcrumbList className="text-xs font-black uppercase text-muted-foreground/60 tracking-tight">
 			<BreadcrumbItem>
-				<BreadcrumbLink href="/" className="hover:text-primary transition-colors">Home</BreadcrumbLink>
+				<BreadcrumbLink href={import.meta.env.BASE_URL} className="hover:text-primary transition-colors">Home</BreadcrumbLink>
 			</BreadcrumbItem>
-			{categories && categories.length > 0 && (
+			{category && (
 				<>
 					<BreadcrumbSeparator className="opacity-30" />
 					<BreadcrumbItem>
-						<BreadcrumbLink href={`/category/${categories[0]}`} className="hover:text-primary transition-colors">{categories[0]}</BreadcrumbLink>
+						<BreadcrumbLink href={`${import.meta.env.BASE_URL}category/${category}`} className="hover:text-primary transition-colors">{category}</BreadcrumbLink>
 					</BreadcrumbItem>
 				</>
 			)}
@@ -132,7 +132,7 @@ if (!hasFootnotesInHeadings) {
 					<!-- Title Section -->
 					<header class="mb-10 text-center">
 						<div class="text-xs font-black text-primary mb-4 uppercase">
-							<FormattedDate date={pubDate} />
+							<FormattedDate date={pubDate} showTime={true} />
 						</div>
 						<h1 class="text-3xl md:text-5xl font-black tracking-tight text-foreground mb-6 leading-[1.1] text-balance">
 							{title}
@@ -152,7 +152,7 @@ if (!hasFootnotesInHeadings) {
 						prose-li:my-0.5 prose-li:pl-1.5 prose-ul:my-2 prose-ol:my-2
 						[&_ul_ul]:pl-4 [&_ul_ol]:pl-4 [&_ol_ul]:pl-4 [&_ol_ol]:pl-4
 						prose-a:text-primary prose-a:font-black prose-a:underline-offset-4 prose-a:decoration-primary/30
-						prose-img:rounded-md prose-img:border prose-img:border-border/50 prose-img:shadow-sm
+						prose-img:rounded-md prose-img:shadow-sm
 						prose-code:text-primary prose-code:bg-primary/10 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md prose-code:before:content-none prose-code:after:content-none prose-code:font-bold
 						[&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:font-normal
 						prose-pre:rounded-md prose-pre:border prose-pre:border-border/50 prose-pre:bg-card prose-pre:shadow-inner prose-pre:text-sm
@@ -161,19 +161,29 @@ if (!hasFootnotesInHeadings) {
 						<slot />
 					</div>
 
-					<!-- Tags Section (at bottom of content) -->
-					{tags && tags.length > 0 && (
-						<div class="mt-12 pt-6 border-t border-border/40 flex flex-wrap gap-2 items-center">
-							<Tags size={14} className="text-muted-foreground mr-1" />
-							{tags.map(tag => (
-								<a href={`/tags/${tag}`}>
-									<Badge variant="outline" className="text-xs font-black uppercase tracking-tight hover:bg-primary hover:text-primary-foreground transition-colors border-border/50 rounded-md px-2 py-0 bg-secondary/50">
-										{tag}
-									</Badge>
-								</a>
-							))}
+					<!-- Tags & Updated Date Section (at bottom of content) -->
+					{(tags && tags.length > 0) || updatedDate ? (
+						<div class="mt-12 pt-6 border-t border-border/40 flex flex-wrap gap-4 items-center justify-between">
+							{tags && tags.length > 0 && (
+								<div class="flex flex-wrap gap-2 items-center">
+									<Tags size={14} className="text-muted-foreground mr-1" />
+									{tags.map(tag => (
+										<a href={`${import.meta.env.BASE_URL}tags/${tag}`}>
+											<Badge variant="outline" className="text-xs font-black uppercase tracking-tight hover:bg-primary hover:text-primary-foreground transition-colors border-border/50 rounded-md px-2 py-0 bg-secondary/50">
+												{tag}
+											</Badge>
+										</a>
+									))}
+								</div>
+							)}
+
+							{updatedDate && (
+								<div class="text-xs font-black uppercase tracking-tight text-muted-foreground/40">
+									Last updated: <FormattedDate date={updatedDate} showTime={true} />
+								</div>
+							)}
 						</div>
-					)}
+					) : null}
 				</div>
 			</div>
 		</article>
@@ -183,10 +193,30 @@ if (!hasFootnotesInHeadings) {
 			<TableOfContents headings={displayHeadings} />
 		</aside>
 
-		<!-- Code Block Enhancer Script -->
+		<!-- Content Enhancer Scripts -->
 		<script is:inline>
+			function enhanceContent() {
+				// 1. Enhance Code Blocks
+				const preBlocks = document.querySelectorAll('pre');
+				preBlocks.forEach(pre => {
+					if (pre.dataset.enhanced) return;
+					// ... (existing code block logic handled below)
+				});
+
+				// 2. Wrap Tables for scrolling
+				const tables = document.querySelectorAll('.prose table');
+				tables.forEach(table => {
+					if (table.parentElement.classList.contains('table-wrapper')) return;
+					const wrapper = document.createElement('div');
+					wrapper.className = 'table-wrapper';
+					table.parentNode.insertBefore(wrapper, table);
+					wrapper.appendChild(table);
+				});
+			}
+
 			function enhanceCodeBlocks() {
 				const preBlocks = document.querySelectorAll('pre');
+				// ... (rest of the existing enhanceCodeBlocks logic)
 				
 				preBlocks.forEach(pre => {
 					if (pre.dataset.enhanced) return;
@@ -272,8 +302,23 @@ if (!hasFootnotesInHeadings) {
 				});
 			}
 
-			enhanceCodeBlocks();
-			document.addEventListener('astro:after-swap', enhanceCodeBlocks);
+			// Run all enhancements
+			function runAllEnhancements() {
+				enhanceCodeBlocks();
+				
+				// Standard Table Wrapper Logic
+				const tables = document.querySelectorAll('.prose table');
+				tables.forEach(table => {
+					if (table.parentElement.classList.contains('table-wrapper')) return;
+					const wrapper = document.createElement('div');
+					wrapper.className = 'table-wrapper scrollbar-thin';
+					table.parentNode.insertBefore(wrapper, table);
+					wrapper.appendChild(table);
+				});
+			}
+
+			runAllEnhancements();
+			document.addEventListener('astro:after-swap', runAllEnhancements);
 		</script>
 	</div>
 </TwoColumnLayout>

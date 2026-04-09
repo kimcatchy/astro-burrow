@@ -31,7 +31,7 @@ function getFontSize(count: number) {
 <TwoColumnLayout title="Tags Cloud">
 	<!-- Breadcrumbs -->
 	<nav class="mb-6 flex items-center gap-2 text-xs font-black uppercase text-muted-foreground/60 tracking-tight">
-		<a href="/" class="hover:text-primary transition-colors">Home</a>
+		<a href={import.meta.env.BASE_URL} class="hover:text-primary transition-colors">Home</a>
 		<span class="opacity-30">/</span>
 		<span class="text-foreground/40">Tags</span>
 	</nav>
@@ -41,7 +41,7 @@ function getFontSize(count: number) {
 			{uniqueTags.map(tag => {
 				const count = tagCounts[tag];
 				return (
-					<a href={`/tags/${tag}`} class={`inline-flex items-center gap-1.5 font-bold text-muted-foreground hover:text-primary transition-colors ${getFontSize(count)}`}>
+					<a href={`${import.meta.env.BASE_URL}tags/${tag}`} class={`inline-flex items-center gap-1.5 font-bold text-muted-foreground hover:text-primary transition-colors ${getFontSize(count)}`}>
 						<span class="opacity-50">#</span>{tag}
 						<span class="text-xs font-black bg-secondary text-secondary-foreground px-1.5 py-0.5 rounded-md opacity-70">
 							{count}

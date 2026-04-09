@@ -105,11 +105,11 @@ if (!heroImage) {
 	<Breadcrumb className="mb-6">
 		<BreadcrumbList className="text-xs font-black uppercase text-muted-foreground/60 tracking-tight">
 			<BreadcrumbItem>
-				<BreadcrumbLink href="/" className="hover:text-primary transition-colors">Home</BreadcrumbLink>
+				<BreadcrumbLink href={import.meta.env.BASE_URL} className="hover:text-primary transition-colors">Home</BreadcrumbLink>
 			</BreadcrumbItem>
 			<BreadcrumbSeparator className="opacity-30" />
 			<BreadcrumbItem>
-				<BreadcrumbLink href="/projects" className="hover:text-primary transition-colors">Projects</BreadcrumbLink>
+				<BreadcrumbLink href={`${import.meta.env.BASE_URL}projects`} className="hover:text-primary transition-colors">Projects</BreadcrumbLink>
 			</BreadcrumbItem>
 			<BreadcrumbSeparator className="opacity-30" />
 			<BreadcrumbItem>
@@ -137,7 +137,6 @@ if (!heroImage) {
 				<div class="prose prose-invert prose-yellow max-w-none 
 					prose-headings:font-black prose-headings:tracking-tight prose-headings:text-foreground
 					[&>*:first-child]:mt-0
-					prose-h1:text-2xl md:prose-h1:text-4xl prose-h1:mt-10 prose-h1:mb-6
 					prose-h2:text-2xl md:prose-h2:text-3xl prose-h2:mt-10 prose-h2:mb-4
 					prose-h3:text-xl md:prose-h3:text-2xl prose-h3:mt-8 prose-h3:mb-4
 					prose-h4:text-lg md:prose-h4:text-xl prose-h4:mt-6 prose-h4:mb-3
@@ -147,7 +146,7 @@ if (!heroImage) {
 					prose-li:my-0.5 prose-li:pl-1.5 prose-ul:my-2 prose-ol:my-2
 					[&_ul_ul]:pl-4 [&_ul_ol]:pl-4 [&_ol_ul]:pl-4 [&_ol_ol]:pl-4
 					prose-a:text-primary prose-a:font-black prose-a:underline-offset-4 prose-a:decoration-primary/30
-					prose-img:rounded-md prose-img:border prose-img:border-border/50 prose-img:shadow-sm
+					prose-img:rounded-md prose-img:shadow-sm
 					prose-code:text-primary prose-code:bg-primary/10 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md prose-code:before:content-none prose-code:after:content-none prose-code:font-bold
 					[&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:font-normal
 					prose-pre:rounded-md prose-pre:border prose-pre:border-border/50 prose-pre:bg-card prose-pre:shadow-inner prose-pre:text-sm

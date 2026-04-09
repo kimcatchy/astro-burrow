@@ -13,7 +13,7 @@ export function Profile({ title }: ProfileProps) {
         <div className="absolute -inset-1 bg-gradient-to-tr from-primary to-primary/30 rounded-full blur opacity-40 group-hover:opacity-75 transition duration-500 aspect-square"></div>
         {/* Border removed, shadow-none added, made circular */}
         <Avatar className="w-24 h-24 relative shrink-0 rounded-full overflow-hidden border-0 shadow-none">
-          <AvatarImage src="/logo.png" alt={title} className="object-cover" />
+          <AvatarImage src={`${import.meta.env.BASE_URL}logo.png`} alt={title} className="object-cover" />
           <AvatarFallback className="rounded-full">B</AvatarFallback>
         </Avatar>
       </div>

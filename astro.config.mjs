@@ -24,7 +24,12 @@ function remarkShiftHeadings() {
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://example.com',
+  // REPLACE THIS with your own domain
+  site: 'https://yourname.github.io',
+
+  // Set this if you're deploying to a subpath (e.g., '/my-blog')
+  // base: '/',
+
   integrations: [mdx(), sitemap(), react()],
   markdown: {
     remarkPlugins: [remarkShiftHeadings],
