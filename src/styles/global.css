@@ -61,7 +61,7 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    font-family: "Pretendard", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
   }
 }
 
@@ -173,6 +173,10 @@
     transition: background-color 0.2s;
   }
   .scrollbar-thin:hover::-webkit-scrollbar-thumb {
+    background-color: color-mix(in srgb, var(--color-primary), transparent 60%);
+  }
+}
+ar-thumb {
     background-color: color-mix(in srgb, var(--color-primary), transparent 60%);
   }
 }
